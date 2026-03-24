@@ -11,63 +11,53 @@ export default function AddRuleModal({ onClose }) {
 
     const handleSave = () => {
         if (!name || !pattern || !category) return alert("Please fill all fields");
-
-        // Basic regex validation to ensure the user didn't write something that crashes the app
-        try {
-            new RegExp(pattern);
-        } catch (e) {
-            return alert("Invalid Regex Pattern");
-        }
-
-        addSmsRule({
-            id: Date.now(),
-            name,
-            pattern,
-            type,
-            category
-        });
+        try { new RegExp(pattern); } catch (e) { return alert("Invalid Regex Pattern"); }
+        addSmsRule({ id: Date.now(), name, pattern, type, category });
         onClose();
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-2xl w-full max-w-md p-5 animate-[slideIn_0.2s_ease-out]">
-                <h3 className="font-medium text-lg mb-4 border-b pb-2">Add SMS Parsing Rule</h3>
+
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-end sm:items-center justify-center sm:p-4 z-50">
+            <div className="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-md p-5 pb-8 sm:pb-5 animate-[slideIn_0.3s_ease-out] shadow-2xl max-h-[90vh] overflow-y-auto">
+
+                <div className="flex justify-between items-center mb-5 border-b pb-3">
+                    <h3 className="font-bold text-lg text-gray-900">Add SMS Parsing Rule</h3>
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 sm:hidden"><i className="fas fa-times text-lg"></i></button>
+                </div>
 
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm text-gray-700 mb-1">Rule Name</label>
-                        <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="e.g. HDFC Bank Debit" className="w-full p-2 border rounded-lg text-sm" />
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Rule Name</label>
+                        <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="e.g. HDFC Bank Debit" className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-indigo-400" />
                     </div>
 
                     <div>
-                        <label className="block text-sm text-gray-700 mb-1">Pattern (Regex)</label>
-                        <input type="text" value={pattern} onChange={e => setPattern(e.target.value)} placeholder="e.g. Debit of ₹(.*) from a/c" className="w-full p-2 border rounded-lg text-sm font-mono" />
-                        <p className="text-[10px] text-gray-500 mt-1">Use (.*) to capture the amount.</p>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Pattern (Regex)</label>
+                        <input type="text" value={pattern} onChange={e => setPattern(e.target.value)} placeholder="e.g. Debit of ₹(.*) from a/c" className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-mono outline-none focus:border-indigo-400" />
+                        <p className="text-[10px] text-gray-500 mt-1 ml-1">Use (.*) to capture the amount.</p>
                     </div>
 
                     <div>
-                        <label className="block text-sm text-gray-700 mb-1">Transaction Type</label>
-                        <select value={type} onChange={e => { setType(e.target.value); setCategory(''); }} className="w-full p-2 border rounded-lg text-sm bg-white">
-                            <option value="expense">Expense</option>
-                            <option value="income">Income</option>
-                        </select>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Transaction Type</label>
+                        <div className="flex bg-gray-100 p-1 rounded-xl">
+                            <button onClick={() => { setType('income'); setCategory(''); }} className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${type === 'income' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'}`}>Income</button>
+                            <button onClick={() => { setType('expense'); setCategory(''); }} className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${type === 'expense' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500'}`}>Expense</button>
+                        </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm text-gray-700 mb-1">Assign to Category</label>
-                        <select value={category} onChange={e => setCategory(e.target.value)} className="w-full p-2 border rounded-lg text-sm bg-white">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Assign to Category</label>
+                        <select value={category} onChange={e => setCategory(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-indigo-400 appearance-none">
                             <option value="">Select Category</option>
-                            {(type === 'income' ? incomeCategories : expenseCategories).map(cat => (
-                                <option key={cat} value={cat}>{cat}</option>
-                            ))}
+                            {(type === 'income' ? incomeCategories : expenseCategories).map(cat => <option key={cat} value={cat}>{cat}</option>)}
                         </select>
                     </div>
                 </div>
 
-                <div className="flex justify-end space-x-2 border-t mt-6 pt-4">
-                    <button onClick={onClose} className="px-4 py-2 border rounded-lg text-sm text-gray-600">Cancel</button>
-                    <button onClick={handleSave} className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm">Save Rule</button>
+                <div className="flex justify-end space-x-3 mt-6 pt-4">
+                    <button onClick={onClose} className="px-5 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition hidden sm:block">Cancel</button>
+                    <button onClick={handleSave} className="w-full sm:w-auto px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-medium shadow-md hover:bg-indigo-700 transition">Save Rule</button>
                 </div>
             </div>
         </div>
