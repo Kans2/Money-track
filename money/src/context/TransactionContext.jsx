@@ -1,5 +1,5 @@
 import { createContext, useState } from 'react';
-import { initialTransactions, defaultIncomeCategories, defaultExpenseCategories } from '../utils/sampleData';
+import { initialTransactions, defaultIncomeCategories, defaultExpenseCategories } from '../utils/SampleData.js';
 
 export const TransactionContext = createContext();
 
